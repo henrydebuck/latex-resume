@@ -1,0 +1,181 @@
+% ============================================================
+%  cv.sty — Shared style & commands for the LaTeX CV
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cv}[2024/01/01 CV Style]
+
+% ── Packages ─────────────────────────────────────────────────
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[english]{babel}
+\RequirePackage{geometry}
+\RequirePackage{titlesec}
+\RequirePackage{enumitem}
+\RequirePackage{xcolor}
+\RequirePackage{hyperref}
+\RequirePackage{parskip}
+\RequirePackage{array}
+\RequirePackage{tabularx}
+\RequirePackage{fancyhdr}
+\RequirePackage{lastpage}
+\RequirePackage{fontawesome5}
+\RequirePackage{microtype}
+\RequirePackage{etoolbox}
+\RequirePackage{ifthen}
+
+% ── Page geometry ────────────────────────────────────────────
+\geometry{
+  a4paper,
+  top=1.8cm,
+  bottom=2cm,
+  left=2cm,
+  right=2cm
+}
+
+% ── Colors ───────────────────────────────────────────────────
+\definecolor{cvgray}{gray}{0.45}
+\definecolor{cvdark}{gray}{0.10}
+\definecolor{cvrule}{gray}{0.70}
+
+% ── Hyperref setup ───────────────────────────────────────────
+\hypersetup{
+  colorlinks=true,
+  urlcolor=cvdark,
+  linkcolor=cvdark
+}
+
+% ── Section titles ───────────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\uppercase}
+  {}{0em}{}
+  [\vspace{-0.4em}\textcolor{cvrule}{\rule{\linewidth}{0.4pt}}]
+
+\titlespacing{\section}{0pt}{1.2em}{0.5em}
+
+% ── Header (name + contact) ──────────────────────────────────
+%
+%  Required data commands (defined in data/*.tex):
+%    \cvName, \cvEmail, \cvPhone, \cvPostalCode, \cvCity
+%    \cvWebsite (optional), \cvLinkedin (optional), \cvGithub (optional)
+%
+\newcommand{\makeheader}{%
+  % ── Name ──
+  {\fontsize{28}{32}\bfseries\selectfont \cvName}
+  \par\vspace{0.6em}
+  % ── Contact grid: 3 columns × 2 rows ──
+  \begin{tabularx}{\linewidth}{@{}X X X@{}}
+    % Row 1: email | phone | address
+    \href{mailto:\cvEmail}{\cvEmail}
+    & \cvPhone
+    & \cvPostalCode, \cvCity
+    \\[0.4em]
+    % Row 2: website | linkedin | github  (each optional)
+    \ifdefempty{\cvWebsite}{}{%
+      \faGlobe\ \href{\cvWebsite}{\cvWebsiteLabel}%
+    }
+    &
+    \ifdefempty{\cvLinkedin}{}{%
+      \faLinkedin\ \href{https://linkedin.com/in/\cvLinkedin}{\cvLinkedin}%
+    }
+    &
+    \ifdefempty{\cvGithub}{}{%
+      \faGithub\ \href{https://github.com/\cvGithub}{\cvGithub}%
+    }
+    \\
+  \end{tabularx}
+  \vspace{0.4em}
+}
+
+% ── \cvsection ───────────────────────────────────────────────
+% Just a thin wrapper so sections stay consistent.
+% Usage: \cvsection{Title}
+\newcommand{\cvsection}[1]{\section*{#1}}
+
+% ── \cvproject ───────────────────────────────────────────────
+% #1 = title   #2 = year (optional, pass {} to omit)
+% #3 = summary #4 = technologies
+\newcommand{\cvproject}[4]{%
+  \textbf{#1}%
+  \ifthenelse{\equal{#2}{}}{}{\ \textbar\ #2}%
+  \par
+  \vspace{0.15em}
+  #3
+  \par
+  \vspace{0.15em}
+  \textbf{Technologies:} #4
+  \par\vspace{0.8em}
+}
+
+% ── \cvskill ─────────────────────────────────────────────────
+% #1 = skill name   #2 = description (optional, pass {} to omit)
+\newcommand{\cvskill}[2]{%
+  \item \textbf{#1}%
+  \ifthenelse{\equal{#2}{}}{}{: #2}%
+}
+
+% ── \cvexperience ────────────────────────────────────────────
+% #1 = job title   #2 = company + location
+% #3 = start date  #4 = end date
+% #5 = description
+\newcommand{\cvexperience}[5]{%
+  \textbf{#1}\par
+  \vspace{0.1em}
+  #2\ \textbar\ \textcolor{cvgray}{#3\ –\ #4}\par
+  \vspace{0.15em}
+  #5
+  \par\vspace{0.8em}
+}
+
+% ── \cveducation ─────────────────────────────────────────────
+% #1 = institution / degree name
+% #2 = date
+% #3 = description (optional, pass {} to omit)
+\newcommand{\cveducation}[3]{%
+  \textbf{#1}\ \textbar\ \textcolor{cvgray}{#2}%
+  \ifthenelse{\equal{#3}{}}{}{%
+    \par\vspace{0.1em}#3%
+  }%
+  \par\vspace{0.8em}
+}
+
+% ── \cvcertification ─────────────────────────────────────────
+% #1 = certification name
+% #2 = issuer + date
+% #3 = description (optional, pass {} to omit)
+\newcommand{\cvcertification}[3]{%
+  \textbf{#1}\ \textbar\ \textcolor{cvgray}{#2}%
+  \ifthenelse{\equal{#3}{}}{}{%
+    \par\vspace{0.1em}#3%
+  }%
+  \par\vspace{0.8em}
+}
+
+% ── \cvlanguage ──────────────────────────────────────────────
+% #1 = language   #2 = level
+\newcommand{\cvlanguage}[2]{%
+  \item \textbf{#1:} #2%
+}
+
+% ── Bullet list environment (skills / languages) ─────────────
+\newenvironment{cvlist}{%
+  \begin{itemize}[leftmargin=1.2em, itemsep=0.2em, topsep=0.2em, parsep=0pt]
+}{%
+  \end{itemize}
+}
+
+% ── Footer (name + page number, only when >1 page) ───────────
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[L]{\small\textcolor{cvgray}{\cvName}}
+\fancyfoot[R]{\small\textcolor{cvgray}{\thepage}}
+
+% First page: no footer unless overflow detected.
+% We always apply the footer style; on a single-page CV it is
+% invisible because the footer sits below the content.
+\fancypagestyle{firstpage}{%
+  \fancyhf{}
+  \renewcommand{\headrulewidth}{0pt}
+  \fancyfoot[L]{\small\textcolor{cvgray}{\cvName}}
+  \fancyfoot[R]{\small\textcolor{cvgray}{\thepage}}
+}

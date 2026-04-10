@@ -1,0 +1,26 @@
+# ── LaTeX build artefacts ────────────────────────────────────
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.blg
+*.bbl
+*.bcf
+*.run.xml
+
+# ── Compiled output (keep example/ committed, ignore root) ───
+*.pdf
+!example/*.pdf
+
+# ── Personal data file (never commit your own data) ──────────
+data/mydata.tex
+
+# ── OS noise ─────────────────────────────────────────────────
+.DS_Store
+Thumbs.db

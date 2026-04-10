@@ -1,0 +1,38 @@
+% ============================================================
+%  main.tex — CV entry point
+%
+%  HOW TO USE
+%  ----------
+%  1. Copy data/template.tex → data/mydata.tex
+%  2. Fill in your personal information in mydata.tex
+%  3. Edit sections/ files with your content
+%  4. Change the \input line below to point to your data file
+%  5. Compile:  pdflatex main.tex
+% ============================================================
+
+\documentclass[11pt, a4paper]{article}
+
+% ── Load shared style ────────────────────────────────────────
+\usepackage{style/cv}
+
+% ── Load personal data ───────────────────────────────────────
+%  Rename data/template.tex → data/mydata.tex, fill it in,
+%  then change the line below to \input{data/mydata}
+\input{data/template}
+
+% ============================================================
+\begin{document}
+\thispagestyle{firstpage}
+
+% ── Header: name + contact ───────────────────────────────────
+\makeheader
+
+% ── Sections (reorder or comment out as needed) ──────────────
+\input{sections/projects}
+\input{sections/skills}
+\input{sections/experience}
+\input{sections/education}
+\input{sections/certifications}
+\input{sections/languages}
+
+\end{document}
